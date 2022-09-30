@@ -8,7 +8,6 @@ One might regard SBDI to consist primarily of three tiers:
 ## (1) Computation Platform
 
 The Computation Platform consists of; hardware, networking, processors, operating system, hypervisor etc. 
-We are using [OpenStack](https://www.openstack.org/)  to administer this tier.
 
 ## (2) Deployment Platform
 This current repository contains mainly the second tier of SBDI 2.0 deployment.
