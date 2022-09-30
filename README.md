@@ -12,7 +12,8 @@ We are using [OpenStack](https://www.openstack.org/)  to administer this tier.
 
 ## (2) Deployment Platform
 This current repository contains mainly the second tier of SBDI 2.0 deployment.
-This second tier is in essence a set of [KVM:s](https://en.wikipedia.org/wiki/Kernel-based_Virtual_Machine) and a set of Ansible scripts that together provides the following services:
+- This second tier is in essence a set of [KVM:s](https://en.wikipedia.org/wiki/Kernel-based_Virtual_Machine) 
+- and a set of Ansible scripts that together provides the following services:
 
 1. An automated setup of the deployment platform (by the Ansible scripts). 
     this approach makes it possible to set up identical deployments environments; production, staging and test.
