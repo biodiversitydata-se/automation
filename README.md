@@ -4,7 +4,7 @@
 One might regard SBDI to consist primarily of 3 tiers:
 1. Computation Platform (hardware)
 2. Deployment Platform (KVM:s and Ansbile scripts) 
-3. Applications, i.e. Docker Swarm Services
+3. Applications (Use of 'Docker Swarm Services')
 	
 ## (1) Computation Platform
 
