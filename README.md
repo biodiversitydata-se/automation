@@ -1,8 +1,8 @@
 # SBDI 2.0 Deployment Platform
 
 One might regard SBDI to consist primarily of three tiers:
-1. Computation Platform
-2. Deployment Platform
+1. Computation Platform (hardware)
+2. Deployment Platform (KVM:s and Ansbile scripts) 
 3. Applications, i.e. Docker Swarm Services
 	
 ## Computation Platform
@@ -12,7 +12,7 @@ In our case we are using OpenStack.
 
 ## Deployment Platform
 This repository contains mainly the second tier of SBDI 2.0 deployment.
-This second tier, the Deployment Platform, is in essence a set of KVM virtual machines and a set of Ansible scripts that together provides the following services:
+This second tier is in essence a set of [KVM:s](https://en.wikipedia.org/wiki/Kernel-based_Virtual_Machine) and a set of Ansible scripts that together provides the following services:
 
 1. Automated setup of the deployment platform (by the Ansible scripts).  In this way any number of identical deployments, like production, staging, test etc my be setup automatically.
 2. Resource configuration. All resources allocated to the deployment platform, like type of machine, disk sizes etc is configured in one file.
