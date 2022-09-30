@@ -17,7 +17,7 @@ This second tier, the Deployment Platform, is in essence a set of KVM virtual ma
 1. Automated setup of the deployment platform (by the Ansible scripts).  In this way any number of identical deployments, like production, staging, test etc my be setup automatically.
 2. Resource configuration. All resources allocated to the deployment platform, like type of machine, disk sizes etc is configured in one file.
 3. Automatic deployment of the third tier of Docker Swarm Services (by Ansible scripts).
-4. Running a set of Docker Swarm Services. This is the major raison d'être for the second tier.
+4. Running a set of Docker Swarm Services.
 5. A framework for configuring, naming and grouping the SBDI Docker Swarm Services into convenient packages (referred to ass “docker apps”).
 6. Tools for maintenance and supervision of the docker Swarm Services (i.e. starting, stopping, overviewing, monitoring health and resources used etc).
 7. Backup and restore of the entire deployment of Docker Swarm Services (data and configuration).
