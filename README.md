@@ -7,7 +7,8 @@ One might regard SBDI to consist primarily of three tiers:
 	
 ## Computation Platform
 
-The Computation Platform consists of hardware, networking, processors, operating system, hypervisor etc. In our case we have thus far used OpenStack. Doing so is not based on technical requirements but rather by historical reasons. In fact the requirements of the second tier is simple. It is fulfilled by a much simpler setup, like virsh on libvirt, https://en.wikipedia.org/wiki/Libvirt,  on four Ubuntu servers with adequate RAM and disk.
+The Computation Platform consists of; hardware, networking, processors, operating system, hypervisor etc. 
+In our case we have thus far used OpenStack.
 
 ## Deployment Platform
 This repository contains mainly the second tier of SBDI 2.0 deployment.
