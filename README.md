@@ -20,7 +20,7 @@ This current repository contains mainly the second tier of SBDI 2.0 deployment.
 3. Resource configuration. All resources allocated to the deployment platform, like type of machine, disk sizes etc is configured in one file.
 4. Automatic deployment of the third tier of Docker Swarm Services (by Ansible scripts).
 5. Running a set of Docker Swarm Services.
-6. A framework for configuring, naming and grouping the SBDI Docker Swarm Services into convenient packages (referred to ass “docker apps”).
+6. A framework for configuring, naming and grouping the SBDI Docker Swarm Services into convenient packages (referred to as “docker apps”).
 7. Tools for maintenance and supervision of the docker Swarm Services (i.e. starting, stopping, overviewing, monitoring health and resources used etc).
 8. Backup and restore of the entire deployment of Docker Swarm Services (data and configuration).
 9. Off site backup safekeeping.
