@@ -1,4 +1,4 @@
-# SBDI 2.0
+# SBDI 2.0 Platform
 
 
 One might regard SBDI to consist primarily of 3 tiers:
