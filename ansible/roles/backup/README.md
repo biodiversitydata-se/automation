@@ -1,6 +1,6 @@
 Backup and Restore System
 
-[]{#anchor}Short Summary
+[] {#anchor}Short Summary
 ========================
 
 The Backup and Restore system is part of the SBDI deployment platform.
@@ -1325,20 +1325,7 @@ altogether is probably needed.
 
 Following is an overview diagram of the Backup and Restore system:
 
-[]{#anchor-41}Acknowledgment
-============================
-
-The Backup and Restore system described in this document was originally
-developed by Hans Höök at Altrusoft AB as part of the open source
-AltruSOMO project. It has been tested and used in production for over 10
-years. Since the AltruSOMO code was taken off line, when Altrusoft ended
-operations, the code developed for SBDI have been retrieved from private
-copies and revised and refactored to fit SBDI. The biggest improvements
-from the original code is the integration with Ansible and Docker Swarm.
-
-The parts used from the AltruSOMO project is made available as Open
-Source Software published under the GNU Lesser General Public License
-version 2. Copyright (c) 2009, Altrusoft AB.
+**************************
 
 [^1]:  The concept of a snapshots in ZFS and LVM differ slightly. In LVM
     a snapshot is something that can be accessed and mounted. In ZFS a
