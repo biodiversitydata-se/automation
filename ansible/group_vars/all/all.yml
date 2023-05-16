@@ -1,7 +1,7 @@
 # Common varibles:
 
-ansible_connection: ssh  
-  
+ansible_connection: ssh
+
 host_name: "{{deployment_prefix}}-{{ inventory_hostname }}"
 host_fqdn: "{{host_name}}.{{ domain }}"
 ansible_host: "{{deployment_prefix}}-{{  inventory_hostname }}.{{ domain }}"
@@ -10,8 +10,9 @@ common_ip_part: "{{ private_subnet | regex_replace('0\\/.+$', '') }}"
 host_ip: "{{common_ip_part}}{{ hostvars[inventory_hostname]['nbr'] }}"
 
 # Volumes
-# Where to attache volume devices?
+# Where to attach volume devices?
 data_volume_device: /dev/vdc
+nfs_volume_device: /dev/vdd
 # Note! This does not currently work (ignorded by openstack - probably
 # not possible to set in kvm either...
 # We have currently not found any way to set or know
@@ -20,11 +21,7 @@ data_volume_device: /dev/vdc
 # volumes attached.
 
 # MTU 9000 not poosible (yet) on MicroStac
-internal_network_mtu: 1450 
-
-
+internal_network_mtu: 1450
 
 root_disk_free_warning: 10%
 root_disk_free_critical: 5%
-
-    
