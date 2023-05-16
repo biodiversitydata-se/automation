@@ -1,0 +1,58 @@
+---
+- name: Remove admin users on gateways
+  hosts: gateways
+  remote_user: ubuntu
+  become: true
+  tasks:
+  - name: Remove authorized key for admin users
+    authorized_key:
+      user: "{{ item.key }}"
+      key: "{{ item.value['access_key'] }}"
+      state: "{{ item.value['state'] }}"
+    with_dict: "{{ admin_users }}"
+    when: item.value['state'] == "absent"
+  - name: Remove ubuntu authorized key for admin user
+    authorized_key:
+      user: "ubuntu"
+      key: "{{ item.value['access_key'] }}"
+      state: "{{ item.value['state'] }}"
+    with_dict: "{{ admin_users }}"
+    when: item.value['state'] == "absent"
+  - name: Remove admin users 
+    user:
+      name: "{{ item.key }}"
+      comment: "{{ item.value['full_name'] }}"
+      state: "{{ item.value['state'] }}"
+      remove: "yes"
+    with_dict: "{{ admin_users }}"
+    when: item.value['state'] == "absent"
+
+- name: Remove admin users on servers
+  hosts: servers
+  remote_user: ubuntu
+  become: true
+  vars:
+    ansible_ssh_common_args: "-J ubuntu@{{ deployment_prefix }}-{{ groups['gateways'][0] }}.{{ domain }}"
+  tasks:
+  - name: Remove authorized key for admin users
+    authorized_key:
+      user: "{{ item.key }}"
+      key: "{{ item.value['access_key'] }}"
+      state: "{{ item.value['state'] }}"
+    with_dict: "{{ admin_users }}"
+    when: item.value['state'] == "absent"
+  - name: Remove ubuntu authorized key for admin user
+    authorized_key:
+      user: "ubuntu"
+      key: "{{ item.value['access_key'] }}"
+      state: "{{ item.value['state'] }}"
+    with_dict: "{{ admin_users }}"
+    when: item.value['state'] == "absent"
+  - name: Remove admin users 
+    user:
+      name: "{{ item.key }}"
+      comment: "{{ item.value['full_name'] }}"
+      state: "{{ item.value['state'] }}"
+      remove: "yes"
+    with_dict: "{{ admin_users }}"
+    when: item.value['state'] == "absent"
