@@ -1,0 +1,86 @@
+# Note! This role is dependent on the role: 'lvm_volume_group'
+
+- name: Create an lvm volume for storage of Docker config and volumes (lv_docker_nfs)
+  community.general.lvol:
+    vg: vg_docker_nfs
+    lv: lv_docker_nfs
+#    size: "{{ nfs_docker_storage }}G"
+    size: +100%FREE
+    resizefs: true
+    force: yes
+  when: nfs_docker_storage is defined
+    
+- name: Format the lvm volume for docker data with xfs
+  community.general.filesystem:
+    fstype: xfs
+    resizefs: yes
+    dev: /dev/vg_docker_nfs/lv_docker_nfs
+    opts: -i size=512
+  when: nfs_docker_storage is defined
+    
+- name: Check if mount point for local docker data "/docker_nfs" exists
+  stat:
+    path: /docker_nfs
+  register: docker_nfs_mount_point    
+  
+- name: Create mount point for local docker data "/docker_nfs"
+  file:
+    path: /docker_nfs
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+    recurse: yes
+  when: docker_nfs_mount_point.stat.exists == false
+  
+- name: Mount volume lv_docker_nfs_volume at /docker_nfs
+  ansible.posix.mount:
+    src: /dev/vg_docker_nfs/lv_docker_nfs
+    fstype: xfs
+    path: /docker_nfs
+    state: mounted
+  when: nfs_docker_storage is defined
+  
+- name: Make sure the "/docker_nfs" mount point has the correct access rights
+  file:
+    path: /docker_nfs
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  when: nfs_docker_storage is defined
+  
+- name: Make sure the "/docker_nfs" mount point has the correct subdirectories for deployment 
+  file:
+    path: "/docker_nfs/{{item}}"
+    owner: root
+    group: root
+    mode: 0755
+#    recurse: yes
+    state: directory
+  with_items:
+    - etc
+    - usr
+    - var
+    - var/volumes
+    - var/backup
+    - var/lib
+    - tmp
+  when: nfs_docker_storage is defined
+  
+- name: Make sure the "/docker_nfs" mount point has the correct subdirectories for deployment 
+  file:
+    path: "/docker_nfs/{{item}}"
+    owner: root
+    group: root
+    mode: 0755
+#    recurse: yes
+    state: directory
+  with_items:
+    - etc
+    - usr
+    - var
+    - var/volumes
+    - var/backup
+    - tmp
+  when: nfs_docker_storage is defined

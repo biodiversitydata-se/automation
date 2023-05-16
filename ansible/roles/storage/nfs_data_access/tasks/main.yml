@@ -1,0 +1,27 @@
+- name: Check if mount point for docker data "/docker_nfs" exists
+  stat:
+    path: /docker_nfs
+  register: nfs_mount_point
+- name: Create  mount point for docker data "/docker_nfs"
+  file:
+    path: /docker_nfs
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: nfs_mount_point.stat.exists == false
+- name: Make sure the "/docker_nfs" mount point has the correct access rights
+  file:
+    path: /docker_nfs
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+- name: Mount docker NFS volume at "/docker_nfs" permanently 
+  ansible.posix.mount:
+    src: "{{  deployment_prefix+'-'+ groups['nfs_server'][0] }}:/docker_nfs"
+    fstype: nfs
+#    opts: defaults,_netdev
+    opts: rw,auto,nolock,rsize=16384,wsize=16384,tcp,nfsvers=4,timeo=600,actimeo=600
+    path: /docker_nfs
+    state: mounted

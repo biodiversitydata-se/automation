@@ -1,0 +1,2 @@
+dependencies:
+  - { role: roles/storage/lvm_volume_group, volume_group: 'vg_docker_nfs', lvm_device: "{{ nfs_docker_storage_device }}" }

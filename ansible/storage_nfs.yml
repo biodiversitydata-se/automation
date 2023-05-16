@@ -1,0 +1,79 @@
+---
+- name: "Setup NFS storage"
+  hosts: localhost
+  gather_facts: yes
+  tasks:
+    - name: "Ensure NFS volumes"
+      openstack.cloud.volume:
+        state: present
+        size: "{{ (hostvars[item]['nfs_docker_storage'] | default(0) | int) }}"
+        display_name: "{{ deployment_prefix }}-{{ item }}-volume_nfs_docker"
+      with_items: "{{ groups['nfs_server'] }}"
+      when:  hostvars[item]['nfs_docker_storage'] is defined
+      tags:
+        - nfs_storage
+
+- name: "Attach NFS device to host"
+  hosts: localhost
+  gather_facts: yes
+  tasks:
+    - name: "Attach NFS volumes to servers"
+      openstack.cloud.server_volume:
+        state: present
+        server: "{{ deployment_prefix }}-{{ item }}"
+        volume: "{{ deployment_prefix }}-{{ item }}-volume_nfs_docker"
+        device: "{{ hostvars[item]['nfs_volume_device'] }}"
+      with_items: "{{ groups['nfs_server'] }}"
+      tags:
+        - nfs_storage
+
+- name: "Take an inventory of volumes in our cloud"
+  hosts: localhost
+  tasks:
+    - name: "Register info about all volumes"
+      openstack.cloud.volume_info:
+      register: volume_info
+      tags:
+        - nfs_storage
+        - nfs_server
+
+- name: "Setup NFS"
+  hosts: nfs_server
+  gather_facts: yes
+  become: true
+  tasks:
+    - name: "Filter out volume device id if there is a docker nfs storage volume attached"
+      set_fact:
+        nfs_docker_storage_device_id:  "virtio-{{item.id}}"
+      with_items: "{{ hostvars['localhost'].volume_info.volumes }}"
+      when: item.name | regex_search("volume_nfs$")
+
+    - name: "The volume device id that we are looking for"
+      debug:
+        var: nfs_docker_storage_device_id
+  
+    - name: "Set nfs_docker_storage_device of this host to be an atached volume if there is one attached"
+      set_fact:
+        nfs_docker_storage_device:  "/dev/{{ item }}"
+      with_items: "{{ ansible_facts.devices }}"
+      when: ansible_facts.devices[item].links.ids | select('in', nfs_docker_storage_device_id) | list | length > 0
+
+    - name: "Setup *NFS* storage for Docker data on {{ nfs_docker_storage_device }}"
+      include_role:
+        name: roles/storage/nfs_docker_storage
+      tags: nfs_storage_setup
+
+    - name: "Setup NFS Server"  
+      include_role:
+        name: roles/storage/nfs_server
+      tags: nfs_server_setup
+  tags: 
+    - nfs_server
+
+- name: "Setup NFS Clients on all nodes" 
+  hosts: nfs_clients
+  become: true
+  roles:
+  - role: roles/storage/nfs_client
+  - role: roles/storage/nfs_data_access
+  tags: nfs_client_setup
