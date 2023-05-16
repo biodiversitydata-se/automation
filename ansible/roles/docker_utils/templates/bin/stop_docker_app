@@ -24,6 +24,7 @@ fi
 USAGE="USAGE: $0 <application_name>"
 
 export DOCKER_CTX={{ docker_ctx | default('/docker') }}
+export DOCKER_LOCAL_CTX="/docker_local"
 
 #cd ..
 #application_name=${PWD##*/}

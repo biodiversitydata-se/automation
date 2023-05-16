@@ -8,7 +8,7 @@ log_logging_application="MGM"
 
 readonly USAGE="USAGE: $0 <application_name>"
 readonly DOCKER_CTX={{ docker_ctx | default('/docker') }}
-readonly DOCKER_LOCAL_CTX="${DOCKER_CTX}_local"
+export DOCKER_LOCAL_CTX="/docker_local"
 readonly DEPLOYMENT_PREFIX="{{ deployment_prefix }}"
 readonly SWARM_MANAGERS="{% for host in groups['swarm_managers'] %}{{deployment_prefix}}-{{ host }} {% endfor %}"
 

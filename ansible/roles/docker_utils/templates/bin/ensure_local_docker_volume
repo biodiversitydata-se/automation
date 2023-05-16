@@ -4,7 +4,7 @@ cd $(dirname $0)
 log_logging_application="MGM"
 
 export DOCKER_CTX={{ docker_ctx | default('/docker') }}
-export DOCKER_LOCAL_CTX="${DOCKER_CTX}_local"
+export DOCKER_LOCAL_CTX="/docker_local"
 
 if [ $EUID -ne 0 ]
 then
