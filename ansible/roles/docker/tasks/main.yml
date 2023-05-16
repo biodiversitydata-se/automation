@@ -1,53 +1,74 @@
+- name: Install aptitude
+  apt:
+    name: aptitude
+    state: latest
+    update_cache: true
+
 - name: Add docker repo key
   ansible.builtin.apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
-    
+
 - name: Add docker repo
   ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable"
     state: present
-    
+
 - name: Install basic packages
   apt:
     pkg:
-    - docker-ce
-    - python3-pip
-#    - python3-jsondiff
-#    - python3-docker
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+      - python3-pip
+      - virtualenv
+      - python3-setuptools
+    state: latest
+    update_cache: true
 
+#- name: Install basic python packages
+#  pip:
+#    name:
+#    - docker
+#    - jsondiff
+#    - pyyaml
 
-- name: Install basic python packages
+- name: Update apt and install docker-ce
+  package:
+    name: docker-ce
+    state: latest
+    update_cache: true
+
+- name: Install Docker Module for Python
   pip:
-    name:
-    - docker
-    - jsondiff
-    - pyyaml
+    name: docker
 
 - name: Load kernel module ip_vs (seems to be neded by swarm)
   modprobe:
     name: ip_vs
     state: present
-    
+
 - name: Ensure module ip_vs is loded at reboot
   ansible.builtin.lineinfile:
     path: /etc/modules
     regexp: '^ip_vs'
     line: ip_vs
-   
+
 - name: Download and install docker compose
   get_url:
-    url: "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64"
+    url: "https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64"
     timeout: 30
     dest: /usr/local/bin/docker-compose
     owner: root
     mode: 0755
-    
+
 - name: "Check if the directory /docker/var/lib/{{ host_name }} exists"
   stat:
     path: "/docker/var/lib/{{host_name}}"
   register: docker_var_lib_stat
-    
+
 - name: "Make sure the directory /docker/var/lib/{{ host_name }} exists"
   file:
     path: "/docker/var/lib/{{host_name}}"
@@ -57,7 +78,7 @@
     recurse: yes
     state: directory
   when: not docker_var_lib_stat.stat.exists
-  
+
 - name: copy Docker daemon config
   template:
     src: daemon.json
@@ -69,7 +90,7 @@
     - restart docker
   tags:
     - daemon_json
-    
+
 - name: Add admin users to docker group
   user:
     name: '{{ item.key }}'
@@ -79,46 +100,3 @@
   when: item.value['state'] == "present"
   notify:
     - restart docker
-    
-- name: Ensure /opt/sbdi folder
-  file: 
-    path: /opt/sbdi
-    owner: root 
-    group: root
-    mode: 0755 
-    state: directory
-
-- name: Ensure /opt/sbdi/bin folder
-  file: 
-    path: /opt/sbdi/bin
-    owner: root 
-    group: root
-    mode: 0755 
-    state: directory
-
-- name: Copy docker (template) maintenance scripts
-  template:
-    src: "bin/{{ item }}"
-    dest: /opt/sbdi/bin/{{ item }}
-    owner: root
-    group: root
-    mode: 0755
-  with_items:
-    - list_docker_apps
-    - start_docker_app
-    - stop_docker_app
-    - ensure_docker_host_labels
-    - ensure_local_docker_volume
-    - ensure_global_docker_volume
-  tags:
-    - docker_maintenance_scripts
-    
-- name: Copy docker maintenance scripts
-  copy:
-    src: "bin/{{ item }}"
-    dest: /opt/sbdi/bin/{{ item }}
-    owner: root
-    group: root
-    mode: 0755
-  with_items:
-    - service_exec
