@@ -155,3 +155,23 @@ domain=biodiversitydata.se
 alias_domain=sbdi.se
 external_network="Public External IPv4 Network"
 server_image="Ubuntu 20.04 - 2021.03.23"
+
+# NFS Storage
+# ===============
+[nfs_server]
+manager-1 nfs_docker_storage=800
+
+[nfs_server:vars]
+nfs_docker_storage=800
+
+[nfs_clients]
+manager-2
+manager-3
+cassandra-1
+cassandra-2
+cassandra-3
+cassandra-4
+solr-1
+solr-2
+solr-3
+solr-4
