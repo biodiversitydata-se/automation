@@ -47,13 +47,13 @@ Example:
 
 Only deploy the species stack/docker app without redeploying static_html and haproxy:
 
-```bin/deploy_docker_app.sh species" ```
+```bin/deploy_docker_app.sh species```
 
 TODO: Setup logging and log analysis
 
 Note: To do all of the above (except step 1 and 5) run  ```ansible/bin/basline.sh```
 
-## Undeploy everyting
+## Undeploy everything
 
 In order to remove all hosts and networking run:  ```ansible-playbook undeploy.yml``` 
 

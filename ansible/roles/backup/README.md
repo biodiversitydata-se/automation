@@ -1,6 +1,6 @@
 Backup and Restore System
 
-[]{#anchor}Short Summary
+[] {#anchor}Short Summary
 ========================
 
 The Backup and Restore system is part of the SBDI deployment platform.
