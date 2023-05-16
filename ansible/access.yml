@@ -20,13 +20,17 @@
     - name: Accept SSH host keys for gateway fqdn
       shell:  "ssh-keyscan -H {{ deployment_prefix }}-{{ item }}.{{ domain }} >> ~/.ssh/known_hosts"
       with_items: "{{ groups['gateways'] }}"
-      
+  tags:
+    - known_hosts
+
 - name: Setup Name Resolution (i.e. generate /etc/hosts file) on Gateways
   hosts: gateways
   remote_user: ubuntu
   become: true
   roles:
-  - role: roles/name_resolution/etc_hosts
+    - role: roles/name_resolution/etc_hosts
+  tags:
+    - etc_hosts_gateways
 
 - name: Setup SSH access to Servers (Phase II)
   hosts: localhost
@@ -37,7 +41,9 @@
   - name: Accept SSH host keys for server fqdn
     shell:  "ssh ubuntu@{{ deployment_prefix }}-{{ groups['gateways'][0] }} ssh-keyscan -H {{ deployment_prefix }}-{{ item }}.{{ domain }} >> ~/.ssh/known_hosts"
     with_items: "{{ groups['servers'] }}"
-      
+  tags:
+    - known_hosts_servers
+
 - name: Setup Name Resolution (i.e. generate /etc/hosts file) on Servers
   hosts: servers
   remote_user: ubuntu
@@ -46,6 +52,9 @@
     ansible_ssh_common_args: "-J ubuntu@{{ deployment_prefix }}-{{ groups['gateways'][0] }}.{{ domain }}"
   roles:
     - role: roles/name_resolution/etc_hosts
+  tags:
+    - etc_hosts_servers
+
 #      tags: etchosts
 
 
