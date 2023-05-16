@@ -1,7 +1,7 @@
 ---
 # ansible-playbook initial_setup.yml --extra-vars "selected_hosts=['<inventory hostname>']"
 #
-- name: Initialize servers and gatways 
+- name: Initialize servers and gatways
   hosts: "{{ selected_hosts | default('servers:gateways') }}"
   become: true
   tasks:
@@ -21,7 +21,7 @@
       delay: 10
     when: apt_upgrade_status.changed
   - name: Check if reboot needed
-    stat: 
+    stat:
       path: /var/run/reboot-required
     register: reboot_required_marker_file
   # - debug:
@@ -34,7 +34,7 @@
     wait_for_connection:
       delay: 10
     when: reboot_required_marker_file.stat.exists
-    
+
 - name: Install utility scripts
   hosts: "{{ selected_hosts | default('servers:gateways') }}"
   become: true
@@ -58,9 +58,3 @@
       - net-tools
       - ca-certificates
       - software-properties-common
-      - emacs-nox
-      - elpa-yaml-mode
-      - tree
-      
-
-  
