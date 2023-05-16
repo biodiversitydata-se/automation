@@ -14,6 +14,7 @@
     - etc/biocachebackend/config
     - usr/biocachebackend
     - usr/biocachebackend/bin
+    - tmp
   tags:
     - app_directory
 
@@ -26,6 +27,7 @@
     state: directory
   with_items:
     - etc/biocachebackend
+    - tmp
   tags:
     - write_access
 
@@ -65,9 +67,12 @@
 
 - name: Install script to run biocache
   template:
-    src: usr/bin/run_biocache.sh
-    dest: "{{ docker_ctx | default('/docker') }}/usr/biocachebackend/bin/run_biocache.sh"
+    src: "usr/bin/{{ item }}"
+    dest: "{{ docker_ctx | default('/docker') }}/usr/biocachebackend/bin/"
     mode: 0755
+  with_items:
+    - "run_biocache.sh"
+    - "run_biocache_local.sh"
   tags:
     - app_runscript
 
