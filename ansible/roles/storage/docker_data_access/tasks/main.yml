@@ -37,4 +37,5 @@
     - var
     - var/volumes
     - var/backup
+    - tmp
 

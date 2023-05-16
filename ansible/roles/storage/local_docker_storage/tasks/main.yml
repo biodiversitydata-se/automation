@@ -64,6 +64,7 @@
     - var/volumes
     - var/backup
     - var/lib
+    - tmp
   when: local_docker_storage is defined
   
 - name: Make sure the "/docker_local" mount point has the correct subdirectories for deployment 
@@ -80,6 +81,7 @@
     - var
     - var/volumes
     - var/backup
+    - tmp
   when: local_docker_storage is defined
 
 
