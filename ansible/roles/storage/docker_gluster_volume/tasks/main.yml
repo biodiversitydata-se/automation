@@ -1,6 +1,6 @@
-# - name: Debug
-#   debug:
-#     msg: "{{ groups['storage'] | map('regex_replace', '(^.*$)', deployment_prefix+'-\\1') | list }}"
+- name: Debug
+  debug:
+    msg: "{{ groups['storage'] | map('regex_replace', '(^.*$)', deployment_prefix+'-\\1') | list }}"
 
 - name: Create a trusted Gluster storage pool of all storage servers
   gluster.gluster.gluster_peer:
@@ -23,5 +23,19 @@
     replicas: "{{ replica_count }}"
     #rebalance: yes
     cluster: "{{ groups['storage'] | map('regex_replace', '(^.*$)', deployment_prefix+'-\\1') | list }}"
+    options:
+      { 'features.cache-invalidation': 'on',
+        'features.cache-invalidation-timeout': '600',
+        'performance.cache-samba-metadata': 'on',
+        'performance.cache-invalidation': 'on',
+        'performance.stat-prefetch': 'on',
+        'client.event-threads': '4',
+        'server.event-threads': '4',
+        'performance.io-thread-count': '64',
+        'server.outstanding-rpc-limit': '128',
+        'cluster.lookup-optimize': 'on',
+        'performance.cache-size': '128MB',
+        'write-behind': 'off',
+        'quick-read': 'on'
+      }
   run_once: true
-

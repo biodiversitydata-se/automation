@@ -68,12 +68,12 @@
     flags: [ lvm ]
     state: present
   when: device_needs_partitioning
-  
     
 - name: "Create volume group: {{ volume_group }} based on: {{ lvm_device }}1"
   lvg:
     vg: "{{ volume_group }}"
     pvs: "{{ lvm_device }}1"
     pesize: 16
+    pv_options: "--dataalignment 256K"
     force: yes
     state: present
