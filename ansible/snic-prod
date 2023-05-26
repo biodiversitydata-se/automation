@@ -1,0 +1,155 @@
+# Ansible roles
+# =============
+
+[gateways]
+access-1 nbr=11 flavor=ssc.xsmall floating_ip=130.238.28.90 server_group=
+access-2 nbr=12 flavor=ssc.xsmall floating_ip=130.238.28.197 server_group=
+
+[servers]
+manager-1 nbr=21 flavor=ssc.xlarge.highmem server_group= 
+cassandra-1 nbr=41 server_group=000c4681-3903-4e35-b5cd-bcdff94dc6af local_docker_storage=500
+cassandra-2 nbr=42 server_group=000c4681-3903-4e35-b5cd-bcdff94dc6af local_docker_storage=500
+cassandra-3 nbr=43 server_group=000c4681-3903-4e35-b5cd-bcdff94dc6af local_docker_storage=500
+cassandra-4 nbr=44 server_group=000c4681-3903-4e35-b5cd-bcdff94dc6af local_docker_storage=500
+solr-1 nbr=51 server_group=17f2ac33-368d-4132-b6d6-6cfeaa6371b6 local_docker_storage=200
+solr-2 nbr=52 server_group=17f2ac33-368d-4132-b6d6-6cfeaa6371b6 local_docker_storage=200
+solr-3 nbr=53 server_group=17f2ac33-368d-4132-b6d6-6cfeaa6371b6 local_docker_storage=200
+solr-4 nbr=54 server_group=17f2ac33-368d-4132-b6d6-6cfeaa6371b6 local_docker_storage=200
+backup-director nbr=91 flavor=ssc.tiny server_group=
+backup-target nbr=92 flavor=ssc.medium.highmem volume_backup=15 server_group=
+nagios nbr=97 flavor=ssc.tiny server_group=
+connect-1 nbr=101 flavor=ssc.xsmall floating_ip=130.238.28.95 server_group=
+
+
+# Solr Cluster
+# ============
+[solr]
+solr-1 nbr=51 
+solr-2 nbr=52 
+solr-3 nbr=53 
+solr-4 nbr=54 
+
+[solr:vars]
+local_docker_storage=200
+flavor=ssc.xlarge.highmem
+server_group=17f2ac33-368d-4132-b6d6-6cfeaa6371b6
+
+# Cassandra Cluster
+# =================
+[cassandra]
+cassandra-1 nbr=41 
+cassandra-2 nbr=42 
+cassandra-3 nbr=43 
+cassandra-4 nbr=44 
+
+[cassandra:vars]
+local_docker_storage=500
+flavor=ssc.xlarge.highmem
+server_group=000c4681-3903-4e35-b5cd-bcdff94dc6af
+
+# Gluster Storage
+# ===============
+[storage]
+manager-1
+solr-1 local_docker_storage=200
+solr-2 local_docker_storage=200 
+solr-3 local_docker_storage=200
+solr-4 local_docker_storage=200
+cassandra-1 local_docker_storage=500
+cassandra-2 local_docker_storage=500
+cassandra-3 local_docker_storage=500
+cassandra-4 local_docker_storage=500
+
+[storage:vars]
+volume_gluster=200
+
+# Backup
+# ======
+
+[backup_director]
+backup-director
+
+[backup_targets]
+backup-target
+
+[backup_sources]
+manager-1 gluster_backup_source=True lvm_backup_source=False backup_snapshot_storage=20
+cassandra-1 gluster_backup_source=False lvm_backup_source=True backup_snapshot_storage=20
+cassandra-2 gluster_backup_source=False lvm_backup_source=True backup_snapshot_storage=20 
+cassandra-3 gluster_backup_source=False lvm_backup_source=True backup_snapshot_storage=20 
+cassandra-4 gluster_backup_source=False lvm_backup_source=True backup_snapshot_storage=20 
+solr-1 gluster_backup_source=False lvm_backup_source=True backup_snapshot_storage=20 
+solr-2 gluster_backup_source=False lvm_backup_source=True backup_snapshot_storage=20 
+solr-3 gluster_backup_source=False lvm_backup_source=True backup_snapshot_storage=20 
+solr-4 gluster_backup_source=False lvm_backup_source=True backup_snapshot_storage=20 
+
+
+#Docker
+#======
+
+[docker_swarm]
+manager-1
+cassandra-1
+cassandra-2
+cassandra-3
+cassandra-4
+solr-1
+solr-2
+solr-3
+solr-4
+
+[docker_swarm:vars]
+var_lib_docker_storage=80
+
+[swarm_managers]
+manager-1
+cassandra-1
+solr-1
+
+[swarm_managers:vars]
+var_lib_docker_storage=80
+
+[docker]
+# host with non swarm docker and local storage
+
+[docker:vars]
+var_lib_docker_storage=80
+
+# Nagios
+# ======
+
+[nagios_servers]
+nagios
+
+
+# IP sec access
+# =============
+
+[ipsec_servers]
+connect-1
+
+# Deployment specific vars
+# ========================
+
+[all:vars]
+deployment_prefix=prod
+private_subnet=10.101.0.0/24
+domain=biodiversitydata.se
+alias_domain=sbdi.se
+external_network="Public External IPv4 Network"
+server_image="Ubuntu 22.04 - 2023.01.07"
+
+# NFS Storage
+# ===============
+[nfs_server]
+manager-1 nfs_docker_storage=10
+
+[nfs_clients]
+cassandra-1
+cassandra-2
+cassandra-3
+cassandra-4
+solr-1
+solr-2
+solr-3
+solr-4
