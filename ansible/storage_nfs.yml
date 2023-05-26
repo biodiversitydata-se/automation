@@ -41,36 +41,53 @@
   hosts: nfs_server
   gather_facts: yes
   become: true
+  vars:
+    vol_name_regex: '^{{ deployment_prefix }}-{{ inventory_hostname }}-volume_nfs_docker$'
+
   tasks:
+    - name: Set NFS volume name
+      set_fact:
+        nfs_docker_storage_volume_name: "{{ item.name }}"
+      with_items: "{{ hostvars['localhost'].volume_info.volumes }}"
+      when: item.name | regex_search(vol_name_regex)
+
+    - name: "The volume name that we are looking for"
+      debug:
+        var: nfs_docker_storage_volume_name
+
     - name: "Filter out volume device id if there is a docker nfs storage volume attached"
       set_fact:
-        nfs_docker_storage_device_id:  "virtio-{{item.id}}"
+        nfs_docker_storage_device_id: "virtio-{{item.id}}"
       with_items: "{{ hostvars['localhost'].volume_info.volumes }}"
-      when: item.name | regex_search("volume_nfs$")
+      when: item.name | regex_search(nfs_docker_storage_volume_name)
 
     - name: "The volume device id that we are looking for"
       debug:
         var: nfs_docker_storage_device_id
-  
+
     - name: "Set nfs_docker_storage_device of this host to be an atached volume if there is one attached"
       set_fact:
-        nfs_docker_storage_device:  "/dev/{{ item }}"
+        nfs_docker_storage_device: "/dev/{{ item }}"
       with_items: "{{ ansible_facts.devices }}"
       when: ansible_facts.devices[item].links.ids | select('in', nfs_docker_storage_device_id) | list | length > 0
+
+    - name: "The NFS volume device"
+      debug:
+        var: nfs_docker_storage_device
 
     - name: "Setup *NFS* storage for Docker data on {{ nfs_docker_storage_device }}"
       include_role:
         name: roles/storage/nfs_docker_storage
       tags: nfs_storage_setup
 
-    - name: "Setup NFS Server"  
+    - name: "Setup NFS Server"
       include_role:
         name: roles/storage/nfs_server
       tags: nfs_server_setup
-  tags: 
+  tags:
     - nfs_server
 
-- name: "Setup NFS Clients on all nodes" 
+- name: "Setup NFS Clients on all nodes"
   hosts: nfs_clients
   become: true
   roles:
