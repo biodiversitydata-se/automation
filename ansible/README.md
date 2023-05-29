@@ -33,15 +33,17 @@ This repository contains Ansible playbooks for:
 
 9. Setup storage for docker data and configuration: ```ansible-playbook storage.yml```
 
-10. Setup Docker and Docker Swarm: ```ansible-playbook docker.yml```
+10. Setup nfs storage: ```ansible-playbook storage_nfs.yml```
 
-11. Setup backup: ```ansible-playbook backup.yml```
+11. Setup Docker and Docker Swarm: ```ansible-playbook docker.yml```
 
-12. Setup Nagios monitoring: ```ansible-playbook monitor.yml```
+12. Setup backup: ```ansible-playbook backup.yml```
 
-13. Setup IPSEC VPN access: ```ansible-playbook vpn.yml```
+13. Setup Nagios monitoring: ```ansible-playbook monitor.yml```
 
-14. Setup Docker Applications: ```ansible-playbook docker_apps.yml```
+14. Setup IPSEC VPN access: ```ansible-playbook vpn.yml```
+
+15. Setup Docker Applications: ```ansible-playbook docker_apps.yml```
 
 Example:
 
